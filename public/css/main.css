@@ -1,0 +1,9 @@
+.box{
+    padding:20px;
+    background: #ccc;
+    text-align: center;
+}
+
+.box a {
+    text-align: center;
+}
