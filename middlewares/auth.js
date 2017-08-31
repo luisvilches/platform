@@ -11,7 +11,7 @@ exports.Authenticated = (req,res,next) => {
     }
 
     let token = req.headers.authorization.split(" ")[1];
-    let payload = jwt.decode(token,config.TOKEN_SECRET);
+    let payload = jwt.decode(token,config.auth.TOKEN_SECRET);
 
     /*if (payload.exp <= moment().unix()) {
      return res.status(401).send({message: 'Session expirada'})

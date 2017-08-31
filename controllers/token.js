@@ -4,6 +4,7 @@
 
 const jwt = require('jwt-simple');
 const moment = require('moment');
+const config = require('../config/config');
 
 exports.createTokens = (user) => {
     let payload = {
@@ -13,5 +14,5 @@ exports.createTokens = (user) => {
         username: user.name,
     };
 
-    return jwt.encode(payload,config.TOKEN_SECRET);
+    return jwt.encode(payload,config.auth.TOKEN_SECRET);
 }

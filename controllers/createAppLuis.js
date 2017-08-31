@@ -3,7 +3,7 @@
  */
 const fetch = require('node-fetch');
 const config = require('../config/config');
-const App =  require('../models/app');
+const User =  require('../models/user');
 
 // crea una nueva app en luis.ai
 exports.add = (req,res) => {
@@ -28,7 +28,7 @@ exports.add = (req,res) => {
     })
     .then(res => res.json())
     .then(response => {
-        let data = new App({
+        let data = {
             apiKey: response,
             name: req.body.name,
             description: req.body.description,
@@ -36,21 +36,46 @@ exports.add = (req,res) => {
             scenario: req.body.scenario,
             domain: req.body.domain,
             version: "0.1"
-        });
-
-        data.save((err,result) => {
+        };
+        
+        console.log(response);
+        User.findByIdAndUpdate(req.params.id,{$push:{"apps":data}},{safe:true,upsert:true}, (err,result) => {
             if(err){
-                return res.status(500).json({state:"error",message:err});
+                return res.status(500).json({state:"Error",message:err});
             } else {
-                return res.status(200).json({state:"success",message:result});
+                return res.status(200).json({state:"Success",message:result});
             }
         });
     });
 };
 
+// elimina una apps asociada a un usuario
+exports.delete = (req,res) =>{
 
+    let Header = {
+        "Content-type": "application/json",
+        "Ocp-Apim-Subscription-Key": config.luis.api_key
+    };
 
+    fetch(`${config.luis.urlMain}/${req.params.appId}`, {
+        method:"DELETE",
+        headers: Header
+    }).then(res => res.json())
+    .then(response => {
+        console.log(response);
+    });
 
+    /*User.findOne({'apps._id': req.params.id}, (err, result) => {
+        result.apps.id(req.params.id).remove();
+        result.save((err) => {
+            if(err) {
+                return res.status(500).json({status:"Error",message: err});
+            } else {
+                return res.status(200).json({status: "Success",message:result});
+            }
+        });
+    });*/
+}
 
 
 
